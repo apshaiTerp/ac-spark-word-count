@@ -36,34 +36,19 @@ public class BasicSparkWordCount {
   /** A simple regex pattern for identifying spaces */
   private static final Pattern SPACE = Pattern.compile(" ");
   
-  /** Internal reference to our file path in HDFS passed from command line */
-  private String hdfsFile;
-
-  public BasicSparkWordCount(String hdfsFile) {
-    this.hdfsFile = hdfsFile;
-  }
-  
   /**
    * @param args list of command line arguments
    */
+  @SuppressWarnings("serial")
   public static void main(String[] args) {
     if (args.length < 1) {
       System.err.println ("No file path provided as $1 input");
       return;
     }
     
-    BasicSparkWordCount count = new BasicSparkWordCount(args[0]);
-    count.execute();
-  }
-  
-  /**
-   * Helper method to drive the program execution.
-   */
-  @SuppressWarnings("serial")
-  public void execute() {
     try {
       SparkSession spark = SparkSession.builder().appName("JavaWordCount").getOrCreate();
-      JavaRDD<String> lines = spark.read().textFile(hdfsFile).javaRDD();
+      JavaRDD<String> lines = spark.read().textFile(args[0]).javaRDD();
 
       JavaRDD<String> words = lines.flatMap(new FlatMapFunction<String, String>() {
           public Iterator<String> call(String s) {
