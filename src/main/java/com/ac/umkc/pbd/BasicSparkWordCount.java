@@ -2,6 +2,7 @@ package com.ac.umkc.pbd;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.spark.SparkConf;
@@ -71,6 +72,11 @@ public class BasicSparkWordCount {
             return i1 + i2;
           }
       });
+
+      List<Tuple2<String, Integer>> output = counts.collect();
+      for (Tuple2<?,?> tuple : output) {
+        System.out.println(tuple._1() + ": " + tuple._2());
+      }
 
       counts.saveAsTextFile(args[1]);
       
